@@ -1,0 +1,121 @@
+#! /usr/bin/env python
+# Name: stos-ucset
+# Desc: User Control - Set
+# Date: 2011.04.14
+# Note:
+
+import sys
+import string
+from stos.toolutil import *
+import stos.importmgr.core
+
+#---macros---
+
+#TOOL_NAME(string):
+#The tool name. 
+#This name would be used when creating a temporary directory.
+TOOL_NAME='ucset'
+
+#TOOL_VERSION(string):
+#Version information. Usually use the date of your last commit.
+TOOL_VERSION='20110419'
+
+#DEBUG_MODE(bool):
+#True to enable debug mode(to show all messages), otherwise False.
+DEBUG_MODE=False
+
+#MSG_MASK(msg_type_list, a bitwise expression of message types):
+#Don't show the messages unless the DEBUG_MODE is True if their type is
+#listed in msg_type_list. Note that msg_type_list is a bitwise-expression
+#of message types.
+MSG_MASK=MSG.ALL^MSG.NL
+
+#ERR_STR(string): the string which is printed when an error occurs.
+ERR_STR='ERR_UCSET'
+
+if __name__ == '__main__':
+    tu=TuCore(TOOL_NAME,TOOL_VERSION,MSG_MASK,DEBUG_MODE)
+
+    def list_callback(opt,opt_str,value,parser,*args,**kwargs):
+        stos.importmgr.core.list(stos.importmgr.core.ST.WRITE)
+        tu.quit_tool(0)
+
+    def version_callback(opt,opt_str,value,parser,*args,**kwargs):
+        print tu.get_version()
+        tu.quit_tool(0)
+
+    def debug_callback(opt,opt_str,value,parser,*args,**kwargs):
+        tu.set_debug_mode(True)
+
+    def parse_options():
+        import optparse 
+        #init options parser
+        parser=optparse.OptionParser(description='''\
+Set the value VALUE to the setting SETTING in the import manager. \
+If the assignment is successful, it prints the value, otherwise a string \
+%s is printed. Note that you must run this command with root.\
+'''%ERR_STR,
+            usage='%prog [OPTIONS] SETTING VALUE')
+        parser.add_option('-l', '--setting-list',
+                          action='callback',
+                          callback=list_callback,
+                          help='display available settings and quit')
+        parser.add_option('-V', '--version',
+                          action='callback',
+                          callback=version_callback,
+                          help='display version information and quit')
+        parser.add_option('-d', '--debug',
+                          action='callback',
+                          callback=debug_callback,
+                          help='enable debug mode(print all messages).')
+        parser.add_option('-u', '--user',
+                          metavar="ACCOUNT_ID",
+                          action='store',
+                          dest='user_id',
+                          help='\
+assign the account id ACCOUNT_ID to assign a user setting value for a \
+particular user. If you assign a user setting value without this option, \
+the setting for the current user is modified.')
+        (option, args)=parser.parse_args()
+        tu.print_msg(MSG.DD,"option=<%r> args=<%r>" %(option,args))
+        #check given arguments
+        if len(args)==0:
+            raise TuExcept(ERR.INPUT,
+                "Invalid inputs: No SETTING is given. You must assign a \
+SETTING to set a value.")
+        if len(args)==1:
+            raise TuExcept(ERR.INPUT,
+                "Invalid inputs: No VALUE is given. You must assign a \
+value to the current SETTING:%s"%args[0])
+        if len(args)>2:
+            raise TuExcept(ERR.INPUT,
+                "Invalid inputs: Too many inputs. Only one setting to \
+assign one value each time.")
+        if option.user_id!=None:
+            args.append(option.user_id)
+        tu.print_msg(MSG.DD,"args=<%r>"%args)
+        return args
+
+    try:
+        args=parse_options()
+        if os.getuid()!=0:
+            raise TuExcept(ERR.INPUT,
+                "You must run stos-ucset with root.")
+        if len(args)==2:
+            tu.print_msg(MSG.DD,"importmgr.core.ucset(%s,%s)" %(args[0],args[1]))
+            print string.join(stos.importmgr.core.ucset(args[0],args[1],None,
+                tu.get_msg_mask(),tu.get_debug_mode()),',')
+        else:
+            tu.print_msg(MSG.DD,"importmgr.core.ucset(%s,%s,%s)" %(args[0],args[1],args[2]))
+            print string.join(stos.importmgr.core.ucset(args[0],args[1],args[2],
+                tu.get_msg_mask(),tu.get_debug_mode()),',')
+        tu.quit_tool(0)
+    except TuExcept as e:
+        tu.print_msg(MSG.EE,e.error_msg)
+        tu.print_msg(MSG.NL,ERR_STR)
+        tu.quit_tool(e.error_type)
+    except Exception as e:
+        tu.print_msg(MSG.EE,"Unknown exception: %r"%(e))
+        tu.print_msg(MSG.NL,ERR_STR)
+        tu.quit_tool(ERR.UNKNOWN)
+

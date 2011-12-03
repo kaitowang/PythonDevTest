@@ -1,0 +1,77 @@
+SCIM Setup Utilities
+
+---What's it---
+
+A set of modules to handle SCIM settings, especially the settings about
+SCIM setup in the booting flow. For example, to enable/disable SCIM by 
+default or to get the default IM list for a particular language in the 
+first boot.
+
+---Installation---
+
+Run "python setup.py install"
+
+---How to use---
+
+Please see the example "scim/examples/ssu_ex.py".
+
+---Modules---
+
+scim.ssu - the main module for reading/writing SCIM setup settings.
+
+It provide two functions, get and set, to read/write settings. They always
+return a list as their return value, even there is only one value returned. 
+(i.e. a list contains only one entry.) If an error occurs, an exception is 
+thrown. We suggest using this module in python codes.
+
+scim.ssuget 
+scim.ssuset - interface modules embedded in other languages.
+
+Each of them provides one and only one function called run. The run function
+always return a string as it's return value. If several values are returned,
+they are merged in a string and separated with comma. If an error occurs, a
+string ERR_XXXXXX is returned. We suggest using these modules in other 
+programming language such as C/C++.
+
+---Stos-ssu Tools---
+
+stos-ssuget - a script tool to get the settings.
+stos-ssuset - a script tool to set the settings.
+
+They are tools which can be run in the cmdline environment. Please run they 
+with --help option to see more detail usage. We suggest using them in shell
+scripts.
+
+---Available settings---
+
+Please run stos-ssu tools with --list option to see the setting list.
+
+---Files---
+
+scim/ssu.py - the main module 
+scim/ssuget.py - the ssuget module
+scim/ssuset.py - the ssuset module
+scim/examples/ssu_ex.py - an example to use ssu modules
+scripts/stos-ssuget - a script tool to get settings
+scripts/stos-ssuset - a script tool to set settings
+
+---Changelog---
+
+2011-03-30 Kevin Wang <kevin.wang@splashtop.com> 1.0.0
+
+    First release.
+
+    * scim/ssu.py,
+    scim/ssuget.py,
+    scim/ssuset.py:
+    The ssu modules.
+    * scripts/stos-ssuget,
+    scripts/stos-ssuset:
+    The tools to read/write settings.
+    * scim/examples/ssu_ex.py:
+    An example to use ssu.
+    * setup.py,
+    MANIFEST:
+    The python module setup.
+    * README:
+    The README document.

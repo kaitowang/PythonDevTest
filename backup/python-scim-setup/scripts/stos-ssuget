@@ -1,0 +1,104 @@
+#! /usr/bin/env python
+# Name: ssuget.py
+# Desc: SCIM Setup Utility - Get
+# Date: 2011.03.25
+# Note:
+
+import sys
+import string
+from stos.toolutil import *
+import scim.ssu
+
+#---macros---
+
+#TOOL_NAME(string):
+#The tool name. 
+#This name would be used when creating a temporary directory.
+TOOL_NAME='ssuget'
+
+#TOOL_VERSION(string):
+#Version information. Usually use the date of your last commit.
+TOOL_VERSION='20110406'
+
+#DEBUG_MODE(bool):
+#True to enable debug mode(to show debug msg.), otherwise False.
+DEBUG_MODE=False
+
+#MSG_FILTER(msg_type bitwise expression):
+#Don't show the messages unless the DEBUG_MODE is True if their type is
+#listed in msg_type_list. Note that msg_type_list is an bitwise-expression
+#of msg_type.
+MSG_FILTER=MSG.ALL^MSG.NL
+
+#ERR_STR(string): the string which is printed when an error occurs.
+ERR_STR='ERR_SSUGET'
+
+if __name__ == '__main__':
+    tu=TuCore(TOOL_NAME,TOOL_VERSION,DEBUG_MODE,MSG_FILTER)
+
+    def list_callback(opt,opt_str,value,parser,*args,**kwargs):
+        scim.ssu.list(scim.ssu.ST.READ)
+        tu.quit_tool(0)
+
+    def version_callback(opt,opt_str,value,parser,*args,**kwargs):
+        print tu.get_version()
+        tu.quit_tool(0)
+
+    def debug_callback(opt,opt_str,value,parser,*args,**kwargs):
+        tu.set_debug_mode(True)
+
+    def parse_options():
+        tu.print_msg(MSG.DD,"---Function--- parse_options()")
+        import optparse 
+        #init options parser
+        parser=optparse.OptionParser(description='''\
+Get the value of the given setting SETTING from the scim-setup-utils. \
+If the query is successful, it prints the result, otherwise a string \
+%s is printed. When you query the setting 'imlist', you need to assign \
+the locale LANG as well, for example, ssuget imlist zh_TW.
+            '''%ERR_STR,
+            usage='%prog [OPTIONS] SETTING [LANG]')
+        parser.add_option('-l', '--list',
+                          action='callback',
+                          callback=list_callback,
+                          help='display available settings and quit')
+        parser.add_option('-V', '--version',
+                          action='callback',
+                          callback=version_callback,
+                          help='display version information and quit')
+        parser.add_option('-d', '--debug',
+                          action='callback',
+                          callback=debug_callback,
+                          callback_args=('r',),
+                          help='enable debug mode (Print the debug \
+messages.)')
+        (option, args)=parser.parse_args()
+        tu.print_msg(MSG.DD,"option=[%r] args=[%r]" %(option,args))
+        #check given arguments
+        if len(args)==0:
+            parser.print_help()
+            tu.quit_tool(0)
+        if len(args)>2:
+            raise TuExcept(ERR.INPUT,
+                "Invalid inputs: Too many SETTINGs.")
+        tu.print_msg(MSG.DD,"SETTING=args=%r"%args)
+        return args
+
+    try:
+        args=parse_options()
+        if len(args)==1:
+            tu.print_msg(MSG.DD,"ssu.get(%s)" %(args[0]))
+            print string.join(scim.ssu.get(args[0]),',')
+        else:
+            tu.print_msg(MSG.DD,"ssu.get(%s,%s)" %(args[0],args[1]))
+            print string.join(scim.ssu.get(args[0],args[1]),',')
+        tu.quit_tool(0)
+    except TuExcept as e:
+        tu.print_msg(MSG.EE,e.error_msg)
+        tu.print_msg(MSG.NL,ERR_STR)
+        tu.quit_tool(e.error_type)
+    except Exception as e:
+        tu.print_msg(MSG.EE,"Unknown exception: %r"%(e))
+        tu.print_msg(MSG.NL,ERR_STR)
+        tu.quit_tool(ERR.UNKNOWN)
+

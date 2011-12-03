@@ -1,0 +1,8 @@
+README
+setup.py
+stos/__init__.py
+stos/toolutil.py
+stos/parseini.py
+stos/examples/toolutil_ex.py
+stos/examples/parseini_ex.py
+stos/examples/parseini_data.ini

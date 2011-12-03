@@ -1,0 +1,12 @@
+README
+setup.py
+scim/__init__.py
+scim/ssu.py
+scim/ssuget.py
+scim/ssuset.py
+scim/examples/ssu_ex.py
+data/init.conf
+data/firstrun.conf
+data/default_imlist.conf
+scripts/stos-ssuget
+scripts/stos-ssuset

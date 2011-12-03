@@ -1,0 +1,87 @@
+STOS Import Manager
+
+---What's it---
+
+A set of modules to handle STOS settings which are imported from Window OS.
+
+---Installation---
+
+Run "python setup.py install"
+
+---How to use---
+
+Please see the example "stos/importmgr/examples/importmgr_ex.py".
+
+---Modules---
+
+stos.importmgr.core - the main module for reading/writing imported
+                      settings.
+
+It provides two functions, ucget and ucset, to read/write settings. They
+always return a list as their return value, even there is only one value
+returned(i.e. a list contains only one entry.). If an error occurs, an
+exception is thrown. We suggest using this module in python codes.
+
+stos.importmgr.ucget
+stos.importmgr.ucset - interface modules embedded in other languages.
+
+Each of them provides one and only one function called run. The run
+function always returns a string as it's return value. If several values
+are returned, they are merged in a string and separated with comma. If an
+error occurs, a string ERR_XXXXXX is returned. We suggest using these
+modules in other programming languages such as C/C++.
+
+---stos-uc Tools---
+
+stos-ucget - a script tool to get the settings.
+stos-ucset - a script tool to set the settings.
+
+They are tools which can be run in the cmdline environment. Please run them
+with --help option to see more detail usage. We suggest using them in shell
+scripts.
+
+---Available settings---
+
+Please run stos-uc tools with --setting-list option to see the setting
+list.
+
+---Files---
+
+stos/importmgr/core.py - the main module 
+stos/importmgr/ucget.py - the ucget module
+stos/importmgr/ucset.py - the ucset module
+stos/importmgr/examples/importmgr_ex.py
+- an example to use stos.importmgr modules
+scripts/stos-ucget - a script tool to get settings
+scripts/stos-ucset - a script tool to set settings
+
+---Changelog---
+
+2011-05-25 Kevin Wang <kevin.wang@splashtop.com> 1.1.0
+
+    * stos/importmgr/core.py:
+    1. Add hidden "ro_user_*" settings for stos-login-mgr to query.
+    2. Update the "user_folder" setting definition.
+    3. Change the display of some error messages.
+    4. Rename the variables in BaseOp-based classes.
+    * stos/importmgr/examples/importmgr_ex.py:
+    Add "ro_user_*" examples.
+
+2011-04-20 Kevin Wang <kevin.wang@splashtop.com> 1.0.0
+
+    First release.
+
+    * stos/importmgr/core.py,
+    stos/importmgr/ucget.py,
+    stos/importmgr/ucset.py:
+    The importmgr modules.
+    * scripts/stos-ucget,
+    scripts/stos-ucset:
+    The tools to read/write imported settings.
+    * stos/importmgr/examples/importmgr_ex.py:
+    An example to use importmgr.
+    * setup.py,
+    MANIFEST:
+    The python module setup.
+    * README:
+    The README document.

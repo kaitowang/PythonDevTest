@@ -1,0 +1,118 @@
+python-stos-utils - Python Utilities for STOS
+
+---What's it---
+
+A set of classes for python scripts used in STOS.
+
+---Installation---
+
+Run "python setup.py install"
+
+---How to use---
+
+Please see the examples in "stos/examples/".
+
+---Modules---
+
+toolutil: A set of classes for a python tool script.
+
+    TuCore - The core class 
+
+        This class provides a source management which handles 
+        1. The tool name, version and quit flow.
+        2. The output message.
+        3. The temporary data used in a tool script.
+
+    TuMsg - The message class
+
+        A class to handle the "message print" feature.
+
+    TuExcept - The exception class
+
+        Contain more information in an exception.
+
+    ERR - The error type constants 
+
+    MSG - The message type constants
+
+parseini: A module to provide a set of high-level APIs to parse ini files.
+
+    ParseINIBase - The base class of ParseINI
+
+        This is an abstract class for ParseINI classes.
+
+    ParseINIcp - A ParseINI class implemented by ConfigParser
+
+---Files---
+
+stos/toolutil.py - the toolutil module 
+stos/parseini.py - the parseini module
+stos/examples/toolutil_ex.py - an example to use toolutil
+stos/examples/parseini_ex.py - an example to use parseini
+stos/examples/parseini_data.ini - a ini file for testing
+
+---Changelog---
+
+2011-05-10 Kevin Wang <kevin.wang@splashtop.com> 2.2.0
+
+    2.2.0 release.
+
+    * stos/parseini.py:
+    Add the parseini module.
+
+    * stos/examples/parseini_ex.py,
+    stos/examples/parseini_data.ini:
+    Add a parseini example.
+
+    * README:
+    Update README to 2.2.0.
+
+2011-04-15 Kevin Wang <kevin.wang@splashtop.com> 2.1.0
+
+    2.1.0 release.
+
+    * stos/toolutil.py:
+    Add set/get_msg_mask functions in the TuCore and TuMsg class.
+
+    * stos/examples/toolutil_ex.py:
+    Update the toolutil example to use new functions.
+
+    * README:
+    Update README to 2.1.0.
+
+2011-04-14 Kevin Wang <kevin.wang@splashtop.com> 2.0.0
+
+    2.0.0 release.
+
+    * stos/toolutil.py:
+    1. Separate TuMsg from TuCore
+    Let the message print feature(TuMsg) can work without using TuCore.
+    2. Modify TuCore interface
+    TuCore(input_name,input_ver,input_debug_mode,input_msg_filter) ->
+    TuCore(input_name,input_ver,input_msg_filter,input_debug_mode=False)
+    3. Remove the shebang in the toolutil module and change its mode to
+    644(not executable).
+
+    * stos/examples/toolutil_ex.py:
+    1. Use the new TuCore class in the example.
+    2. Add the TuMsg example.
+
+    * README:
+    Update README to 2.0.0.
+
+2011-03-30 Kevin Wang <kevin.wang@splashtop.com> 1.0.0
+
+    First release. Add the toolutil module.
+
+    * stos/toolutil.py:
+    The toolutil module.
+
+    * stos/examples/toolutil_ex.py:
+    An example to use toolutil.
+
+    * setup.py,
+    MANIFEST:
+    The python module setup.
+
+    * README:
+    The README document.
